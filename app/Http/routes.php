@@ -32,3 +32,5 @@ Route::get('/logout', [
     'uses' => '\Prego\Http\Controllers\AuthController@logOut',
     'as'   => 'auth.logout'
 ]);
+
+Route::resource('projects', 'ProjectController');
