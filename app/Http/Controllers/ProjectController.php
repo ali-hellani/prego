@@ -18,7 +18,7 @@ class ProjectController extends Controller {
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::personal()->get();
 
         return view('projects.index')->withProject($projects);
     }
@@ -68,7 +68,8 @@ class ProjectController extends Controller {
      */
     public function show($id)
     {
-        //
+        $project = Project::find($id);
+        return view('projects.show')->withProject($project);
     }
 
     /**
