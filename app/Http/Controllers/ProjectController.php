@@ -5,9 +5,11 @@ namespace Prego\Http\Controllers;
 use Auth;
 use Illuminate\Http\Request;
 
+use Prego\File;
 use Prego\Http\Requests;
 use Prego\Http\Controllers\Controller;
 use Prego\Project;
+use Prego\Task;
 
 class ProjectController extends Controller {
 
@@ -69,8 +71,9 @@ class ProjectController extends Controller {
     public function show($id)
     {
         $project = Project::find($id);
-
-        return view('projects.show')->withProject($project);
+        $tasks = $this->getTasks($id);
+        $files = $this->getFiles($id);
+        return view('projects.show')->withProject($project)->withTasks($tasks)->withFiles($files);
     }
 
     /**
@@ -121,6 +124,23 @@ class ProjectController extends Controller {
         $project->delete();
 
         return redirect()->route('projects.index')->with('info', 'Project deleted successfully');
+    }
+
+    /**
+     * Get all the tasks for a Project
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function getTasks($id)
+    {
+        $tasks =  Task::project($id)->get();
+        return $tasks;
+    }
+
+    public function getFiles($id)
+    {
+        $files =  File::project($id)->get();
+        return $files;
     }
 
 }
