@@ -69,6 +69,7 @@ class ProjectController extends Controller {
     public function show($id)
     {
         $project = Project::find($id);
+
         return view('projects.show')->withProject($project);
     }
 
@@ -80,7 +81,9 @@ class ProjectController extends Controller {
      */
     public function edit($id)
     {
-        //
+        $project = Project::find($id);
+
+        return view('projects.edit')->withProject($project);
     }
 
     /**
@@ -92,7 +95,18 @@ class ProjectController extends Controller {
      */
     public function update(Request $request, $id)
     {
-        //
+        $project = Project::findOrFail($id);
+        $this->validate($request, [
+            'project_name'     => 'required|min:3',
+            'due-date' => 'required|date|after:today',
+            'project_notes'    => 'required|min:10',
+            'project_status'   => 'required'
+        ]);
+
+        $values = $request->all();
+        $project->fill($values)->save();
+
+        return redirect()->back()->with('info','Your Project has been updated successfully');
     }
 
     /**
@@ -103,6 +117,10 @@ class ProjectController extends Controller {
      */
     public function destroy($id)
     {
-        //
+        $project = Project::findOrFail($id);
+        $project->delete();
+
+        return redirect()->route('projects.index')->with('info', 'Project deleted successfully');
     }
+
 }
